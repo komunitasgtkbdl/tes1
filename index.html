@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="RIANG - Platform Edukasi Digital yang menyenangkan dan interaktif.">
+    <title>RIANG - Platform Edukasi Digital</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel (untuk JSX) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* Base Styling & Custom Animations */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
+        
+        @keyframes slideUp { 
+            from { transform: translateY(30px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+        .slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        /* Utility classes untuk delay animasi */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        
+        /* Sembunyikan scrollbar untuk tampilan yang lebih bersih jika diperlukan */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen relative">
+
+    <!-- Fallback jika JavaScript dimatikan -->
+    <noscript>
+        <div class="p-4 bg-red-100 text-red-700 text-center font-semibold">
+            Mohon aktifkan JavaScript di browser Anda untuk menggunakan Platform Edukasi RIANG.
+        </div>
+    </noscript>
+
+    <!-- Root Element untuk React -->
+    <div id="root"></div>
+
+    <!-- ========================================== -->
+    <!-- TOMBOL FULLSCREEN (TIDAK MENGUBAH DESAIN)  -->
+    <!-- ========================================== -->
+    <button id="btn-fullscreen" onclick="toggleFullScreen()" 
+            class="fixed bottom-6 right-6 md:top-6 md:bottom-auto z-[9999] bg-slate-800/80 hover:bg-slate-900 text-white p-3 rounded-full shadow-xl backdrop-blur-sm transition-all duration-300 group flex items-center justify-center w-14 h-14" 
+            title="Layar Penuh" aria-label="Toggle Fullscreen">
+        <i id="icon-fullscreen" class="fas fa-expand text-2xl group-hover:scale-110 transition-transform"></i>
+    </button>
+
+    <!-- ========================================== -->
+    <!-- KODE APLIKASI REACT (JSX)                  -->
+    <!-- ========================================== -->
+    <script type="text/babel">
+        // --- KOMPONEN: Header ---
+        const Header = () => (
+            <header class="bg-white shadow-sm sticky top-0 z-50 fade-in">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center h-16">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-brand-500 text-white p-2 rounded-lg flex items-center justify-center w-10 h-10">
+                                <i class="fas fa-book-open text-xl"></i>
+                            </div>
+                            <h1 class="font-bold text-2xl text-slate-800 tracking-tight">RIANG</h1>
+                        </div>
+                        <nav class="hidden md:flex space-x-8">
+                            <a href="#" class="text-brand-600 font-medium">Beranda</a>
+                            <a href="#" class="text-slate-500 hover:text-slate-900 transition-colors">Materi</a>
+                            <a href="#" class="text-slate-500 hover:text-slate-900 transition-colors">Kuis</a>
+                            <a href="#" class="text-slate-500 hover:text-slate-900 transition-colors">Profil</a>
+                        </nav>
+                        <div class="md:hidden">
+                            <button class="text-slate-500 hover:text-slate-900 focus:outline-none">
+                                <i class="fas fa-bars text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        );
+
+        // --- KOMPONEN: Card Materi ---
+        const CourseCard = ({ title, icon, color, description, delay }) => (
+            <div className={`bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer slide-up ${delay}`}>
+                <div className={`${color} w-12 h-12 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm`}>
+                    <i className={`fas ${icon} text-xl`}></i>
+                </div>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">{title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed mb-4">{description}</p>
+                <div className="flex items-center text-brand-600 font-semibold text-sm group">
+                    Mulai Belajar 
+                    <i className="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </div>
+        );
+
+        // --- KOMPONEN UTAMA: App ---
+        const App = () => {
+            const courses = [
+                { id: 1, title: 'Matematika Dasar', icon: 'fa-calculator', color: 'bg-blue-500', description: 'Belajar berhitung, pecahan, dan logika matematika dengan cara yang menyenangkan.', delay: 'delay-100' },
+                { id: 2, title: 'Sains & Alam', icon: 'fa-flask', color: 'bg-green-500', description: 'Eksplorasi dunia alam, biologi, dan fisika dasar lewat eksperimen sederhana.', delay: 'delay-200' },
+                { id: 3, title: 'Bahasa Indonesia', icon: 'fa-pencil', color: 'bg-amber-500', description: 'Tingkatkan kemampuan membaca, menulis, dan memahami cerita.', delay: 'delay-300' }
+            ];
+
+            return (
+                <div className="min-h-screen flex flex-col font-sans">
+                    <Header />
+                    
+                    <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+                        {/* Hero Section */}
+                        <section className="bg-brand-50 rounded-3xl p-8 md:p-12 mb-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-brand-100 slide-up">
+                            <div className="md:w-1/2 text-center md:text-left">
+                                <span className="inline-block py-1 px-3 rounded-full bg-brand-100 text-brand-700 text-xs font-bold uppercase tracking-wider mb-4">Platform Digital</span>
+                                <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 leading-tight">
+                                    Belajar Menjadi <span className="text-brand-600">Lebih Riang!</span>
+                                </h2>
+                                <p className="text-lg text-slate-600 mb-8 max-w-lg">
+                                    Platform edukasi interaktif yang dirancang khusus untuk membuat proses belajar mengajar menjadi pengalaman yang tidak membosankan.
+                                </p>
+                                <button className="bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+                                    Mulai Petualangan <i className="fas fa-rocket ml-2"></i>
+                                </button>
+                            </div>
+                            <div className="md:w-1/2 flex justify-center">
+                                {/* Placeholder for illustration */}
+                                <div className="w-64 h-64 md:w-80 md:h-80 bg-white rounded-full flex items-center justify-center shadow-xl border-8 border-brand-100 relative">
+                                    <i className="fas fa-graduation-cap text-9xl text-brand-400 absolute"></i>
+                                    <div className="absolute top-10 right-10 w-12 h-12 bg-yellow-400 rounded-full animate-bounce"></div>
+                                    <div className="absolute bottom-10 left-10 w-8 h-8 bg-blue-400 rounded-full animate-pulse"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Materi Section */}
+                        <section className="mb-12">
+                            <div className="flex justify-between items-end mb-6 slide-up">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-slate-800">Pilih Materi Kamu</h2>
+                                    <p className="text-slate-500">Beragam kelas yang bisa kamu ikuti hari ini.</p>
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {courses.map(course => (
+                                    <CourseCard key={course.id} {...course} />
+                                ))}
+                            </div>
+                        </section>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="bg-slate-900 text-slate-400 py-8 text-center mt-auto fade-in delay-300">
+                        <p>&copy; {new Date().getFullYear()} RIANG - Platform Edukasi Digital. Dibuat dengan <i className="fas fa-heart text-red-500 mx-1"></i> untuk siswa.</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Render aplikasi ke DOM
+        const rootElement = document.getElementById('root');
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(<App />);
+    </script>
+
+    <!-- ========================================== -->
+    <!-- KODE JAVASCRIPT VANILLA (FULLSCREEN)       -->
+    <!-- ========================================== -->
+    <script>
+        // Mempertahankan kode asli Anda untuk fullscreen
+        function toggleFullScreen() {
+            const icon = document.getElementById('icon-fullscreen');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const icon = document.getElementById('icon-fullscreen');
+            if (!document.fullscreenElement) {
+                icon.classList.remove('fa-compress');
+                icon.classList.add('fa-expand');
+            } else {
+                icon.classList.remove('fa-expand');
+                icon.classList.add('fa-compress');
+            }
+        });
+    </script>
+</body>
+</html>
